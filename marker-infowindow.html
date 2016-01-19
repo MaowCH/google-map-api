@@ -1,0 +1,53 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+ <head>
+  <title> Hello World Google Map API LV3 </title>
+
+<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=true"></script>
+<script language="JavaScript">
+
+	function setupMap() { 
+	var myOptions = {
+	  zoom: 8,
+	  center: new google.maps.LatLng(16.024695711685314, 103.13690185546875),
+	  mapTypeId: google.maps.MapTypeId.ROADMAP
+	};
+	var map = new google.maps.Map(document.getElementById('map_canvas'),
+		myOptions);
+
+	var marker = new google.maps.Marker({
+	map:map,
+	position: new google.maps.LatLng(15.000682,103.728207),
+	draggable: true
+	});
+
+
+	var infowindow = new google.maps.InfoWindow({
+	map:map,
+	content: "hello",
+	position:  new google.maps.LatLng(15.000682,103.728207)
+	});
+
+
+google.maps.event.addListener(map,'click',function(event){
+
+infowindow.open(map,marker);
+infowindow.setContent('hello' + event.latLng);
+infowindow.setPosition(event.latLng);
+
+marker.setPosition(event.latLng);
+
+});
+
+
+	}
+
+</script>
+ </head>
+
+ <body onload="setupMap()">
+  
+<div id="map_canvas" style="width:800px;height:450px;"></div>
+
+ </body>
+</html>
