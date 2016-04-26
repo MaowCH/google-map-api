@@ -1,0 +1,107 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+ <head>
+  <title> Hello World Google Map API LV3 </title>
+
+<meta charset="utf-8" >
+<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=true"></script>
+<script type="text/javascript" src="jquery-1.11.2.min.js" ></script>
+<script language="JavaScript">
+
+var map;
+var infowindow;
+
+function setupMap() { 
+	var myOptions = {
+	  zoom: 8,
+	  center: new google.maps.LatLng(16.024695711685314, 103.13690185546875),
+	  mapTypeId: google.maps.MapTypeId.ROADMAP
+	};
+	 map = new google.maps.Map(document.getElementById('map_canvas'),
+		myOptions);
+		infowindow = new google.maps.InfoWindow();
+selectLocation();
+	}
+
+
+var markers = [];
+function selectLocation(){
+	$.ajax({
+	type:"POST",
+	url: "json-location.php",
+	}).done(function(text){
+		var json = $.parseJSON(text);
+		var html2 = "";
+			for(var i = 0 ;i<json.length;i++){
+				var lat = json[i].lat;
+				var lng = json[i].lng;
+				var location_name =  json[i].location_name;
+				var id = json[i].id;
+				var latlng = new google.maps.LatLng(lat,lng);
+				var makeroption = {map:map, html:location_name, position:latlng};
+				var marker = new google.maps.Marker(makeroption);
+				
+				markers.push(marker);
+
+				html2 += '<div><a href="#" onclick="showInfowindow('+i+')">'+location_name+'</a>';
+				html2 += ' <input type="button" onclick="deleteMarker('+id+')" value="ลบ" /> </div>';
+
+				google.maps.event.addListener(marker,'click',function(e){
+				infowindow.setContent(this.html);
+				infowindow.open(map,this);
+
+				});
+			}
+
+			$("#divShow").html(html2);
+
+	});
+}
+
+
+function showInfowindow(index){
+
+infowindow.setContent(markers[index].html)
+infowindow.open(map,markers[index])
+map.panTo(markers[index].getPosition());
+
+}
+
+function deleteMarker(mid){
+
+$.ajax({
+type: "POST",
+url: "delete.php",
+data: {mid:mid}
+}).done(function(text){
+		alert('ลบแล้ว');
+		removeMarker();
+		selectLocation();
+});
+
+}
+
+
+
+function removeMarker(){
+
+for(var i =0;i<markers.length;i++){
+markers[i].setMap(null);
+}
+
+markers = [];
+
+}
+
+</script>
+ </head>
+
+ <body onload="setupMap()">
+  
+<div id="map_canvas" style="width:800px;height:450px;"></div>
+<div id="divShow"></div>
+
+
+
+ </body>
+</html>
