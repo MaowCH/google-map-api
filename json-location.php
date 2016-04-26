@@ -16,8 +16,10 @@ while($row  = mysql_fetch_array($rs)){
 $lat = $row["lat"];
 $lng = $row["lng"];
 $location_name = $row["location_name"];
+$id = $row["id"];
 $arr = array();
 
+$arr["id"] = $id;
 $arr["lat"] = $lat;
 $arr["lng"] = $lng;
 $arr["location_name"] = $location_name;
